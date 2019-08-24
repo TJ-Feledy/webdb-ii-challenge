@@ -4,3 +4,12 @@ const db = require('../data/dbConfig.js')
 
 const router = express.Router()
 
+router.get('/', (req, res) => {
+  db('cars')
+    .then(cars => {
+      res.json(cars)
+    })
+    .catch(err => {
+      res.status(500).json({ errorMessage: 'Failed to retrieve cars' })
+    })
+})
