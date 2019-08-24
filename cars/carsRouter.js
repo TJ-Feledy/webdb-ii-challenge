@@ -30,4 +30,23 @@ router.get('/:id', (req, res) => {
     })
 })
 
+router.post('/', (req, res) => {
+  const postData = req.body
+
+  if (!postData.VIN || !postData.make || !postData.model || !postData.mileage) {
+    res.status(400).json({ message: 'VIN, make, model, and mileage fields are required' })
+  }else {
+    db('cars').insert(postData)
+      .then(ids => {
+        db('cars').where({id: ids[0]})
+          .then(newCar => {
+            res.status(201).json(newCar)
+          })
+      })
+      .catch(err => {
+        res.status(500).json({ errorMessage: 'Failed to store new car' })
+      })
+  }
+})
+
 module.exports = router
